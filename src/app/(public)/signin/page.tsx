@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   AuthCard,
@@ -20,6 +21,17 @@ const SignInPage = () => {
 
           <AuthCard.Body>
             <AuthSigninForm />
+            <div className="relative">
+              <Image
+                src={"/images/mascot/panda-right-angle.png"}
+                alt="Header background"
+                priority
+                quality={100}
+                width={260}
+                height={260}
+                className="absolute -bottom-50 -left-80 z-[1] select-none pointer-events-none hidden lg:block"
+              />
+            </div>
           </AuthCard.Body>
 
           <AuthCard.Footer>

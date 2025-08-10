@@ -1,18 +1,45 @@
+"use client";
 import { CoreLayout } from "@core/components/Layout";
 import Navbar from "@core/components/NavBar";
 import { ThemeToggleButton } from "@core/components/ThemeToggleButton";
+import Button from "@core/components/ui/Button";
+import { Modal } from "@core/components/ui/Modal";
+import Image from "next/image";
+import { useRef, useState } from "react";
+import {
+  CreateMovieForm,
+  CreateMovieFormHandles,
+} from "src/features/movies/components";
 
 export default function ExamplePage() {
+  const createMovieFormRef = useRef<CreateMovieFormHandles>(null);
+  const [open, setOpen] = useState(false);
+
   return (
     <CoreLayout.Root>
-      <CoreLayout.Header>
+      <CoreLayout.Header srcBackground="/images/backgrounds/cinema-bg.png">
         <CoreLayout.Navbar>
-          {/* Exemplo: logo à esquerda e botão tema à direita */}
           <Navbar />
         </CoreLayout.Navbar>
 
-        {/* Conteúdo central do header (centralizado mesmo com navbar sobreposta) */}
-        <h1 className="text-4xl font-semibold">Bem-vindo ao site</h1>
+        <div className="relative">
+          <Image
+            src={"/images/mascot/panda-frontal-angle.png"}
+            alt="Header background"
+            priority
+            quality={100}
+            width={250}
+            height={250}
+            className="absolute -bottom-45 -left-72 z-1 select-none pointer-events-none hidden lg:block"
+          />
+          <div className="flex flex-col items-center justify-center gap-2">
+            <h1 className="text-6xl font-extrabold">Panda Filmes</h1>
+
+            <Button onClick={() => setOpen(true)} size="large">
+              Adicionar Filme
+            </Button>
+          </div>
+        </div>
       </CoreLayout.Header>
 
       <CoreLayout.Body>
@@ -28,6 +55,29 @@ export default function ExamplePage() {
           <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
         </div>
       </CoreLayout.Body>
+
+      <Modal.Root open={open} onClose={() => setOpen(false)}>
+        <div className="relative p-6">
+          <Modal.Title>Adicionar Filme</Modal.Title>
+          <Modal.CloseButton />
+        </div>
+
+        <Modal.Content>
+          <CreateMovieForm ref={createMovieFormRef} />
+        </Modal.Content>
+
+        <Modal.Actions>
+          <Modal.Action variant="cancel">Cancelar</Modal.Action>
+          <Modal.Action
+            variant="confirm"
+            onClick={() => {
+              createMovieFormRef.current?.submitForm();
+            }}
+          >
+            Salvar
+          </Modal.Action>
+        </Modal.Actions>
+      </Modal.Root>
     </CoreLayout.Root>
   );
 }

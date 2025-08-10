@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ThemeToggleButton } from "../ThemeToggleButton";
 import Button from "../ui/Button";
 import { useJWTAuthActions } from "src/features/auth/providers/AuthProdiver";
+import BrandLogo from "../BrandLogo";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -29,7 +30,7 @@ const Navbar = () => {
   return (
     <nav
       className={`
-        fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-20 py-4
+        fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-20 py-2 max-h-17
         transition-colors duration-300 ease-in-out
         ${
           scrolled
@@ -39,7 +40,7 @@ const Navbar = () => {
       `}
       style={{ WebkitBackdropFilter: scrolled ? "blur(10px)" : "none" }}
     >
-      <div className="text-lg font-bold">{scrolled && "Panda Filmes"}</div>
+      <div className="text-lg font-bold">{scrolled && <BrandLogo />}</div>
 
       <div className="flex gap-5 items-center justify-center">
         <Button size="small" onClick={handleExitButton}>
