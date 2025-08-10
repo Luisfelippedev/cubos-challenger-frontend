@@ -1,42 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@core/components/ui/Button";
-import { Input } from "@core/components/ui/Input";
+import Button from "@core/components/ui/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
-const signUpSchema = z
-  .object({
-    email: z.string().email("E-mail inválido"),
-    password: z.string().min(6, "A senha deve ter ao menos 6 caracteres"),
-    confirmPassword: z
-      .string()
-      .min(6, "Confirmação deve ter ao menos 6 caracteres"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não conferem",
-    path: ["confirmPassword"],
-  });
-
-type SignUpFormData = z.infer<typeof signUpSchema>;
+import Input from "@core/components/ui/Input";
+import { useSignUpForm } from "./useSignupForm";
+import { SignUpFormData, signUpSchema } from "./signupFormSchema";
 
 export const SignUpForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
 
+  const mutation = useSignUpForm();
+
   const onSubmit = (data: SignUpFormData) => {
-    console.log("Form data:", data);
+    mutation.mutate({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <Input
+        id="name"
+        type="text"
+        label="Nome"
+        placeholder="Seu nome completo"
+        {...register("name")}
+        error={!!errors.name}
+        helperText={errors.name?.message}
+      />
+
       <Input
         id="email"
         type="email"
@@ -71,11 +74,11 @@ export const SignUpForm = () => {
         variant="primary"
         type="submit"
         size="small"
-        disabled={isSubmitting}
+        disabled={mutation.isPending}
         fullWidth
         className="mt-2"
       >
-        Cadastrar
+        {mutation.isPending ? "Cadastrando..." : "Cadastrar"}
       </Button>
     </form>
   );

@@ -1,29 +1,22 @@
 "use client";
-import { Button } from "@core/components/ui/Button";
-import { Input } from "@core/components/ui/Input";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-
-const signInSchema = z.object({
-  email: z.string().email("E-mail inválido"),
-  password: z.string().min(6, "A senha deve ter ao menos 6 caracteres"),
-});
-
-type SignInFormData = z.infer<typeof signInSchema>;
+import Input from "@core/components/ui/Input";
+import Button from "@core/components/ui/Button";
+import { useSignInForm } from "./useSigninForm";
+import { SignInFormData, signInSchema } from "./signinFormSchema";
 
 export const SigninForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
-  });
+    formState: { errors },
+  } = useForm<SignInFormData>({ resolver: zodResolver(signInSchema) });
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log("Form data:", data);
-  };
+  const mutation = useSignInForm();
+
+  const onSubmit = (data: SignInFormData) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
@@ -51,11 +44,11 @@ export const SigninForm = () => {
         variant="primary"
         type="submit"
         size="small"
-        disabled={isSubmitting}
+        disabled={mutation.isPending}
         fullWidth
         className="mt-2"
       >
-        Entrar
+        {mutation.isPending ? "Entrando..." : "Entrar"}
       </Button>
     </form>
   );

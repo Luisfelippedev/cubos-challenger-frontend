@@ -1,9 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ThemeToggleButton } from "../ThemeToggleButton";
+import Button from "../ui/Button";
+import { useJWTAuthActions } from "src/features/auth/providers/AuthProdiver";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { logout } = useJWTAuthActions();
 
   useEffect(() => {
     function onScroll() {
@@ -17,6 +20,10 @@ const Navbar = () => {
     window.addEventListener("scroll", onScroll);
 
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleExitButton = useCallback(() => {
+    logout();
   }, []);
 
   return (
@@ -35,7 +42,9 @@ const Navbar = () => {
       <div className="text-lg font-bold">{scrolled && "Panda Filmes"}</div>
 
       <div className="flex gap-5 items-center justify-center">
-        <div>Sair</div>
+        <Button size="small" onClick={handleExitButton}>
+          Sair
+        </Button>
         <ThemeToggleButton />
       </div>
     </nav>
