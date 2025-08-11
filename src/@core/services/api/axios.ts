@@ -1,4 +1,4 @@
-import { setCookie, destroyCookie } from "nookies";
+import { setCookie, destroyCookie, parseCookies } from "nookies";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 
@@ -7,6 +7,15 @@ export const jwtAxios = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+});
+
+jwtAxios.interceptors.request.use((config) => {
+  const { token } = parseCookies();
+  if (token && !config.headers?.Authorization) {
+    config.headers = config.headers ?? {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 jwtAxios.interceptors.response.use(
@@ -20,8 +29,8 @@ jwtAxios.interceptors.response.use(
       // logout();
       // window.location.href = "/signin";
 
-      destroyCookie(null, "token");
-      delete jwtAxios.defaults.headers.common.Authorization;
+      // destroyCookie(null, "token");
+      // delete jwtAxios.defaults.headers.common.Authorization;
 
       return Promise.reject(error);
     }

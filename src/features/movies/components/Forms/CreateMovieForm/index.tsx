@@ -14,7 +14,14 @@ export interface CreateMovieFormHandles {
   submitForm: () => void;
 }
 
-export const CreateMovieForm = forwardRef<CreateMovieFormHandles>((_, ref) => {
+interface CreateMovieFormProps {
+  onSuccess?: () => void;
+}
+
+export const CreateMovieForm = forwardRef<
+  CreateMovieFormHandles,
+  CreateMovieFormProps
+>(({ onSuccess }, ref) => {
   const {
     register,
     handleSubmit,
@@ -23,7 +30,7 @@ export const CreateMovieForm = forwardRef<CreateMovieFormHandles>((_, ref) => {
     resolver: zodResolver(createMovieSchema),
   });
 
-  const mutation = useCreateMovieForm();
+  const mutation = useCreateMovieForm({ onSuccess });
 
   const onSubmit = (data: CreateMovieFormData) => {
     mutation.mutate(data);
@@ -50,6 +57,8 @@ export const CreateMovieForm = forwardRef<CreateMovieFormHandles>((_, ref) => {
         id="description"
         label="Descrição"
         placeholder="Um hobbit é incumbido de destruir um anel poderoso antes que ele caia em mãos erradas."
+        multiline
+        rows={5}
         {...register("description")}
         error={!!errors.description}
         helperText={errors.description?.message}

@@ -4,7 +4,6 @@ import React, { createContext, useContext, ReactNode } from "react";
 import { X } from "lucide-react";
 import clsx from "clsx";
 
-// Contexto interno para fechar o modal de dentro
 interface ModalContextType {
   onClose: () => void;
 }
@@ -17,7 +16,6 @@ function useModalContext() {
   return ctx;
 }
 
-// Root
 interface RootProps {
   open: boolean;
   onClose: () => void;
@@ -34,13 +32,11 @@ const Root = ({ open, onClose, children }: RootProps) => {
         role="dialog"
         aria-modal="true"
       >
-        {/* Overlay */}
         <div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
 
-        {/* Modal Container */}
         <div className="relative z-10 bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-lg mx-4 overflow-hidden animate-fadeIn">
           {children}
         </div>
@@ -49,7 +45,6 @@ const Root = ({ open, onClose, children }: RootProps) => {
   );
 };
 
-// Title
 const Title = ({ children }: { children: ReactNode }) => {
   return (
     <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -58,7 +53,6 @@ const Title = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Close Button
 const CloseButton = () => {
   const { onClose } = useModalContext();
   return (
@@ -72,12 +66,14 @@ const CloseButton = () => {
   );
 };
 
-// Content
 const Content = ({ children }: { children: ReactNode }) => {
   return <div className="p-6">{children}</div>;
 };
 
-// Actions
+const Description = ({ children }: { children: ReactNode }) => {
+  return <p className="text-sm text-gray-600 dark:text-gray-300">{children}</p>;
+};
+
 const Actions = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-800">
@@ -86,9 +82,8 @@ const Actions = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Action Button
 interface ActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "confirm" | "cancel";
+  variant?: "confirm" | "cancel" | "danger";
 }
 
 const Action = ({ variant = "confirm", children, ...props }: ActionProps) => {
@@ -96,11 +91,13 @@ const Action = ({ variant = "confirm", children, ...props }: ActionProps) => {
 
   const baseClasses =
     "px-4 py-2 rounded-md font-medium text-sm transition focus:outline-none";
-  const variants = {
+  const variants: Record<NonNullable<ActionProps["variant"]>, string> = {
     confirm:
       "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
     cancel:
       "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700",
+    danger:
+      "bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600",
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -128,4 +125,5 @@ export const Modal = {
   Content,
   Actions,
   Action,
+  Description,
 };

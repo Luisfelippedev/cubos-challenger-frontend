@@ -1,7 +1,6 @@
 "use client";
 import { CoreLayout } from "@core/components/Layout";
 import Navbar from "@core/components/NavBar";
-import { ThemeToggleButton } from "@core/components/ThemeToggleButton";
 import Button from "@core/components/ui/Button";
 import { Modal } from "@core/components/ui/Modal";
 import Image from "next/image";
@@ -9,9 +8,12 @@ import { useRef, useState } from "react";
 import {
   CreateMovieForm,
   CreateMovieFormHandles,
+  ListMovie,
 } from "src/features/movies/components";
+import { MovieCard } from "src/features/movies/components/Card";
+import { IMovie } from "src/features/movies/types";
 
-export default function ExamplePage() {
+export default function MoviesPage() {
   const createMovieFormRef = useRef<CreateMovieFormHandles>(null);
   const [open, setOpen] = useState(false);
 
@@ -43,17 +45,25 @@ export default function ExamplePage() {
       </CoreLayout.Header>
 
       <CoreLayout.Body>
-        <div className="flex-col">
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-          <h1 className="text-4xl font-semibold h-300">Bem-vindo ao site</h1>
-        </div>
+        {/* Grid pai dos cards */}
+        {/* <div
+          className="grid gap-6 p-6"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          }}
+        >
+          {sampleMovies.map((movie) => (
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onDetails={() => alert(`Detalhes do filme: ${movie.title}`)}
+              onEdit={() => alert(`Editar filme: ${movie.title}`)}
+              onRemove={() => alert(`Remover filme: ${movie.title}`)}
+            />
+          ))}
+        </div> */}
+
+        <ListMovie />
       </CoreLayout.Body>
 
       <Modal.Root open={open} onClose={() => setOpen(false)}>
@@ -63,7 +73,10 @@ export default function ExamplePage() {
         </div>
 
         <Modal.Content>
-          <CreateMovieForm ref={createMovieFormRef} />
+          <CreateMovieForm
+            ref={createMovieFormRef}
+            onSuccess={() => setOpen(false)}
+          />
         </Modal.Content>
 
         <Modal.Actions>

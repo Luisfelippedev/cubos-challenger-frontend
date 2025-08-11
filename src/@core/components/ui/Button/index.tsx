@@ -22,18 +22,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       startIcon,
       endIcon,
       children,
+      onClick,
       ...props
     },
     ref
   ) => {
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick && onClick(e);
+      e.currentTarget.blur(); 
+    };
+
     return (
       <button
         ref={ref}
         className={clsx(
           buttonVariants({ variant, fullWidth, size }),
-          className
+          className,
+          "active:scale-95 active:opacity-80"
         )}
         {...props}
+        onClick={handleClick}
       >
         {startIcon && (
           <span className="inline-flex items-center mr-2">{startIcon}</span>

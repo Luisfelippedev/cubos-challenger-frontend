@@ -2,15 +2,22 @@ import * as React from "react";
 import { inputVariants } from "./variant";
 import clsx from "clsx";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface BaseProps {
   helperText?: string;
   error?: boolean;
   label?: string;
   id?: string;
+  multiline?: boolean;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export type InputProps = BaseProps &
+  React.InputHTMLAttributes<HTMLInputElement> &
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+const Input = React.forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  InputProps
+>(
   (
     {
       className,
@@ -19,10 +26,23 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       helperText,
       error = false,
       disabled = false,
+      multiline = false,
+      rows = 4,
       ...props
     },
     ref
   ) => {
+    const commonProps = {
+      id,
+      className: clsx(
+        inputVariants({ error, disabled }),
+        multiline && "min-h-24 max-h-60 overflow-y-auto resize-y",
+        className
+      ),
+      disabled,
+      "aria-invalid": error as boolean,
+    } as const;
+
     return (
       <div className="space-y-1">
         {label && (
@@ -33,14 +53,22 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {label}
           </label>
         )}
-        <input
-          id={id}
-          ref={ref}
-          className={clsx(inputVariants({ error, disabled }), className)}
-          disabled={disabled}
-          aria-invalid={error}
-          {...props}
-        />
+
+        {multiline ? (
+          <textarea
+            ref={ref as React.Ref<HTMLTextAreaElement>}
+            {...commonProps}
+            {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            rows={rows as number}
+          />
+        ) : (
+          <input
+            ref={ref as React.Ref<HTMLInputElement>}
+            {...commonProps}
+            {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+          />
+        )}
+
         {helperText && (
           <p
             className={clsx(

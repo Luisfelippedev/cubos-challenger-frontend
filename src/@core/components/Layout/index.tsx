@@ -69,7 +69,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
 const Body = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex-1 px-20 py-10 flex items-center justify-center">
+    <div className="flex-1 px-5 py-5 flex items-center justify-center">
       {children}
     </div>
   );
