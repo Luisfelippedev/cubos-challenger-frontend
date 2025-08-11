@@ -6,7 +6,7 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@core/components/ui/Input";
 import MultiSelect from "@core/components/ui/MultiSelect";
@@ -40,7 +40,7 @@ export const CreateMovieForm = forwardRef<
     control,
     formState: { errors },
   } = useForm<CreateMovieFormData>({
-    resolver: zodResolver(createMovieSchema),
+    resolver: zodResolver(createMovieSchema) as Resolver<CreateMovieFormData>,
   });
 
   const queryClient = useQueryClient();
@@ -88,6 +88,15 @@ export const CreateMovieForm = forwardRef<
         {...register("title")}
         error={!!errors.title}
         helperText={errors.title?.message}
+      />
+
+      <Input
+        id="originalTitle"
+        label="Título original (opcional)"
+        placeholder="The Lord of the Rings: The Fellowship of the Ring"
+        {...register("originalTitle")}
+        error={!!errors.originalTitle}
+        helperText={errors.originalTitle?.message}
       />
 
       <Input

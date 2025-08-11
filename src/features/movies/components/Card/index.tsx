@@ -17,7 +17,11 @@ export const MovieCard = ({
   onEdit,
   onRemove,
 }: MovieCardProps) => {
-  const { title, releaseDate, duration, genres, coverImageUrl } = movie;
+  const { title, originalTitle, releaseDate, duration, genres, coverImageUrl } =
+    movie;
+  const showOriginalTitle =
+    typeof originalTitle === "string" &&
+    originalTitle.trim().toLowerCase() !== title.trim().toLowerCase();
 
   const formattedDate = formatDateForDisplay(releaseDate);
 
@@ -52,6 +56,19 @@ export const MovieCard = ({
         >
           {title}
         </h2>
+
+        {showOriginalTitle && (
+          <div
+            className={`text-sm italic mb-2 line-clamp-1 ${
+              coverImageUrl
+                ? "text-gray-300"
+                : "text-gray-600 dark:text-gray-300"
+            }`}
+            title={originalTitle}
+          >
+            {originalTitle}
+          </div>
+        )}
 
         <div
           className={`text-sm mb-3 ${

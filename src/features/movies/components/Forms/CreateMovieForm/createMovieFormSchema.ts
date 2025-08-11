@@ -3,6 +3,7 @@ import { Genre } from "src/features/movies/types";
 
 export const createMovieSchema = z.object({
   title: z.string().min(1, "Título é obrigatório"),
+  originalTitle: z.string().trim().optional(),
   description: z.string().min(1, "Descrição é obrigatória"),
   duration: z
     .number({ error: "Duração deve ser um número" })

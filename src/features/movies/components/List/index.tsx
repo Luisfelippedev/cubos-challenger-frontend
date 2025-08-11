@@ -177,6 +177,13 @@ export const ListMovie = ({
                 <div className="text-base font-semibold">
                   {movieToView.title}
                 </div>
+                {movieToView.originalTitle &&
+                  movieToView.originalTitle.trim().toLowerCase() !==
+                    movieToView.title.trim().toLowerCase() && (
+                    <div className="text-sm italic text-gray-600 dark:text-gray-300">
+                      {movieToView.originalTitle}
+                    </div>
+                  )}
               </div>
 
               <div className="space-y-1">

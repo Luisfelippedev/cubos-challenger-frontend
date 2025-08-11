@@ -6,7 +6,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@core/components/ui/Input";
 import MultiSelect from "@core/components/ui/MultiSelect";
@@ -43,9 +43,10 @@ export const EditMovieForm = forwardRef<
     reset,
     control,
   } = useForm<EditMovieFormData>({
-    resolver: zodResolver(editMovieSchema),
+    resolver: zodResolver(editMovieSchema) as Resolver<EditMovieFormData>,
     defaultValues: {
       title: movie.title,
+      originalTitle: movie.originalTitle,
       description: movie.description,
       duration: movie.duration,
       releaseDate: formatDateForDateInput(movie.releaseDate),
@@ -56,6 +57,7 @@ export const EditMovieForm = forwardRef<
   useEffect(() => {
     reset({
       title: movie.title,
+      originalTitle: movie.originalTitle,
       description: movie.description,
       duration: movie.duration,
       releaseDate: formatDateForDateInput(movie.releaseDate),
@@ -109,6 +111,15 @@ export const EditMovieForm = forwardRef<
         {...register("title")}
         error={!!errors.title}
         helperText={errors.title?.message}
+      />
+
+      <Input
+        id="originalTitle"
+        label="Título original (opcional)"
+        placeholder="The Lord of the Rings: The Fellowship of the Ring"
+        {...register("originalTitle")}
+        error={!!errors.originalTitle}
+        helperText={errors.originalTitle?.message}
       />
 
       <Input
