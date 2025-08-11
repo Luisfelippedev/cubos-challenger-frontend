@@ -11,6 +11,8 @@ import { formatDateForDisplay } from "@core/utils/date";
 import { Pagination } from "@core/components/ui/Pagination";
 import type { ListMovieParams } from "./types";
 import { useEffect, useRef, useState } from "react";
+import { formatCurrencyBRL } from "@core/utils/currency";
+import { decimalLikeToNumber } from "@core/utils/decimal";
 
 interface ListMovieProps extends Omit<ListMovieParams, "page" | "perPage"> {}
 
@@ -203,6 +205,17 @@ export const ListMovie = ({
                   <div className="text-sm">
                     {formatDateForDisplay(movieToView.releaseDate)}
                   </div>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-xs text-gray-500">
+                  Orçamento de Produção
+                </div>
+                <div className="text-sm">
+                  {formatCurrencyBRL(
+                    decimalLikeToNumber((movieToView as any).productionBudget)
+                  )}
                 </div>
               </div>
 

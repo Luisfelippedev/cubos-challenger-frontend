@@ -9,6 +9,7 @@ export interface IMovie {
   releaseDate: string;
   genres: Genre[];
   coverImageUrl?: string;
+  productionBudget: number;
 }
 
 export { Genre } from "./Genre";

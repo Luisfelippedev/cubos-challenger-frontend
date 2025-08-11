@@ -13,6 +13,7 @@ import MultiSelect from "@core/components/ui/MultiSelect";
 import { GENRE_OPTIONS } from "src/features/movies/types/genreOptions";
 import TimeInput from "@core/components/ui/Input/TimeInput";
 import UploadImage from "@core/components/ui/UploadImage";
+import CurrencyInput from "@core/components/ui/Input/CurrencyInput";
 import { uploadMovieCover } from "src/features/movies/services/uploadCoverService";
 import { useFetchFeedback } from "@core/hooks/useFetchFeedback";
 import { useQueryClient } from "@tanstack/react-query";
@@ -41,6 +42,9 @@ export const CreateMovieForm = forwardRef<
     formState: { errors },
   } = useForm<CreateMovieFormData>({
     resolver: zodResolver(createMovieSchema) as Resolver<CreateMovieFormData>,
+    defaultValues: {
+      productionBudget: 0,
+    },
   });
 
   const queryClient = useQueryClient();
@@ -135,6 +139,21 @@ export const CreateMovieForm = forwardRef<
       />
 
       <Controller
+        name="productionBudget"
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <CurrencyInput
+            id="productionBudget"
+            label="Orçamento de Produção"
+            value={typeof value === "number" ? value : 0}
+            onChange={onChange}
+            error={!!errors.productionBudget}
+            helperText={errors.productionBudget?.message}
+          />
+        )}
+      />
+
+      <Controller
         name="genres"
         control={control}
         render={({ field: { value, onChange } }) => (
@@ -154,7 +173,6 @@ export const CreateMovieForm = forwardRef<
       <UploadImage
         value={localCoverUrl}
         onChange={(url) => {
-          // Remoção
           if (!url) {
             if (localCoverUrl?.startsWith("blob:"))
               URL.revokeObjectURL(localCoverUrl);

@@ -110,3 +110,5 @@ const Input = React.forwardRef<
 );
 
 export default Input;
+export { default as TimeInput } from "./TimeInput";
+export { default as CurrencyInput } from "./CurrencyInput";

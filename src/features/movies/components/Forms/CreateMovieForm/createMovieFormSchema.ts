@@ -14,6 +14,9 @@ export const createMovieSchema = z.object({
     .refine((val) => !isNaN(Date.parse(val)), "Data de lançamento inválida"),
   genres: z.array(z.nativeEnum(Genre)).min(1, "Selecione pelo menos um gênero"),
   coverImageUrl: z.string().url().optional(),
+  productionBudget: z
+    .number({ error: "Orçamento de produção é obrigatório" })
+    .positive("Orçamento deve ser maior que zero"),
 });
 
 export type CreateMovieFormData = z.infer<typeof createMovieSchema>;

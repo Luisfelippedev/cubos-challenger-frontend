@@ -21,6 +21,8 @@ import { useFetchFeedback } from "@core/hooks/useFetchFeedback";
 import UploadImage from "@core/components/ui/UploadImage";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateMovie } from "../../../services/updateMovieService";
+import CurrencyInput from "@core/components/ui/Input/CurrencyInput";
+import { decimalLikeToNumber } from "@core/utils/decimal";
 
 export interface EditMovieFormHandles {
   submitForm: () => void;
@@ -51,6 +53,7 @@ export const EditMovieForm = forwardRef<
       duration: movie.duration,
       releaseDate: formatDateForDateInput(movie.releaseDate),
       genres: movie.genres,
+      productionBudget: decimalLikeToNumber((movie as any).productionBudget),
     },
   });
 
@@ -62,6 +65,7 @@ export const EditMovieForm = forwardRef<
       duration: movie.duration,
       releaseDate: formatDateForDateInput(movie.releaseDate),
       genres: movie.genres,
+      productionBudget: decimalLikeToNumber((movie as any).productionBudget),
     });
   }, [movie, reset]);
 
@@ -103,7 +107,6 @@ export const EditMovieForm = forwardRef<
       noValidate
       onSubmit={handleSubmit(onSubmit)}
     >
-      {/* Loader global via FetchProvider */}
       <Input
         id="title"
         label="Título"
@@ -155,6 +158,21 @@ export const EditMovieForm = forwardRef<
         {...register("releaseDate")}
         error={!!errors.releaseDate}
         helperText={errors.releaseDate?.message}
+      />
+
+      <Controller
+        name="productionBudget"
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <CurrencyInput
+            id="productionBudget"
+            label="Orçamento de Produção"
+            value={typeof value === "number" ? value : 0}
+            onChange={onChange}
+            error={!!errors.productionBudget}
+            helperText={errors.productionBudget?.message}
+          />
+        )}
       />
 
       <Controller

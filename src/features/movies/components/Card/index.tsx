@@ -3,6 +3,8 @@ import { Eye, Edit2, Trash, ImageOff } from "lucide-react";
 import { IMovie } from "../../types";
 import Button from "@core/components/ui/Button";
 import { formatDateForDisplay } from "@core/utils/date";
+import { formatCurrencyBRL } from "@core/utils/currency";
+import { decimalLikeToNumber } from "@core/utils/decimal";
 
 interface MovieCardProps {
   movie: IMovie;
@@ -82,6 +84,13 @@ export const MovieCard = ({
           <span className="bg-blue-600 bg-opacity-80 px-2 py-1 rounded text-xs font-semibold">
             {duration} min
           </span>
+          {movie.productionBudget !== undefined && (
+            <span className="bg-emerald-600 bg-opacity-80 px-2 py-1 rounded text-xs font-semibold">
+              {formatCurrencyBRL(
+                decimalLikeToNumber((movie as any).productionBudget)
+              )}
+            </span>
+          )}
           {genres.map((genre) => (
             <span
               key={genre}
