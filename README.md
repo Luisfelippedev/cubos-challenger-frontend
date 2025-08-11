@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Panda Filmes — Cubos.io Challenge (Frontend)
 
-## Getting Started
+Aplicação frontend denominada Panda Filmes, permite o gerenciamento dos filmes favoritos do usuário. Construída com Next.js (App Router), React, Tailwind CSS e React Query. Inclui autenticação (signin/signup) e CRUD de filmes.
 
-First, run the development server:
+### 🚀 Deploy
+- Produção: https://cubos-challenger-frontend.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Sobre
+Frontend do teste técnico da Cubos.io para gerenciamento de filmes. Consome uma API externa configurada via variável de ambiente.
+
+### Stack
+- Next.js 15 (App Router) / React 19
+- Tailwind CSS 4
+- React Hook Form + Zod
+- React Query (@tanstack/react-query)
+- Axios
+
+### Funcionalidades
+- Autenticação: Signin e Signup
+- Listagem paginada de filmes com filtros
+- Criação, edição, detalhamento e exclusão de filmes
+- Tema claro/escuro e UI responsiva
+
+### Ambiente e Variáveis
+Crie um arquivo `.env.local` na raiz com:
+
+```env
+API_BASE_URL=https://sua-api.com
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Observações:
+- `API_BASE_URL` é lida em `src/@core/services/api/axios.ts` e exposta via `next.config.mjs`.
+- O token JWT é salvo em cookie `token` e enviado no header `Authorization` automaticamente.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Como rodar localmente
+1. Instale as dependências:
+```bash
+yarn
+# ou
+npm install
+```
+2. Execute o servidor de desenvolvimento:
+```bash
+yarn dev
+# ou
+npm run dev
+```
+3. Acesse: http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build/produção local:
+```bash
+npm run build && npm start
+# ou
+yarn build && yarn start
+```
 
-## Learn More
+### Scripts
+```json
+{
+  "dev": "next dev --turbopack",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint"
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Estrutura de pastas (resumo)
+```
+src/
+  @core/
+    components/...
+    hooks/...
+    providers/...
+    services/api/axios.ts
+    utils/...
+  app/
+    (public)/signin, signup
+    (private)/movies
+  features/
+    auth/...
+    movies/...
+```
