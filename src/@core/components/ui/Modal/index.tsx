@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useEffect } from "react";
 import { X } from "lucide-react";
 import clsx from "clsx";
 
@@ -29,12 +29,21 @@ const Root = ({
   children,
   disableOutsideClose = false,
 }: RootProps) => {
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return (
     <ModalContext.Provider value={{ onClose }}>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center"
+        className="fixed inset-0 z-50 flex items-center justify-center overscroll-none"
         role="dialog"
         aria-modal="true"
       >

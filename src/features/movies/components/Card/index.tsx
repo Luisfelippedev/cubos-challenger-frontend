@@ -45,11 +45,19 @@ export const MovieCard = ({
       )}
 
       <div className="relative p-6 flex flex-col flex-grow justify-end z-2">
-        <h2 className="text-2xl font-bold leading-tight mb-1 line-clamp-2 text-gray-900 dark:text-white">
+        <h2
+          className={`text-2xl font-bold leading-tight mb-1 line-clamp-2 ${
+            coverImageUrl ? "text-white" : "text-gray-900 dark:text-white"
+          }`}
+        >
           {title}
         </h2>
 
-        <div className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+        <div
+          className={`text-sm mb-3 ${
+            coverImageUrl ? "text-gray-300" : "text-gray-600 dark:text-gray-300"
+          }`}
+        >
           {formattedDate}
         </div>
 
