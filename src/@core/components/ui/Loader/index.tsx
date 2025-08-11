@@ -4,7 +4,7 @@ interface LoaderProps {
   fullscreen?: boolean;
 }
 
-const Loader: React.FC<LoaderProps> = ({ fullscreen }) => {
+const Loader = ({ fullscreen }: LoaderProps) => {
   return (
     <div
       className={`flex items-center justify-center ${

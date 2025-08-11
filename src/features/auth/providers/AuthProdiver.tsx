@@ -2,6 +2,7 @@
 import type { ReactNode } from "react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { parseCookies, destroyCookie } from "nookies";
 import jwt from "jsonwebtoken";
 import { AuthUserType } from "@core/types/AuthUserType";
@@ -54,8 +55,9 @@ interface JWTAuthAuthProviderProps {
   children: ReactNode;
 }
 
-const JWTAuthProvider: React.FC<JWTAuthAuthProviderProps> = ({ children }) => {
+const JWTAuthProvider = ({ children }: JWTAuthAuthProviderProps) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [jwtData, setJWTAuthData] = useState<JWTAuthContextProps>({
     user: null,
     isAuthenticated: false,
@@ -105,6 +107,9 @@ const JWTAuthProvider: React.FC<JWTAuthAuthProviderProps> = ({ children }) => {
   const logout = () => {
     destroyCookie(null, "token");
     setAuthToken();
+    try {
+      queryClient.clear();
+    } catch {}
     setJWTAuthData({
       user: null,
       isLoading: false,

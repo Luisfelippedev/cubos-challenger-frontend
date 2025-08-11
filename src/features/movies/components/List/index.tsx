@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import { IMovie } from "../../types";
 import { MovieCard } from "../Card";
 import GridWrapper from "@core/components/GridWrapper";
@@ -9,21 +8,55 @@ import { Modal } from "@core/components/ui/Modal";
 import { EditMovieForm, EditMovieFormHandles } from "../Forms/EditMovieForm";
 import { useDeleteMovie } from "./hooks/useDeleteMovie";
 import { formatDateForDisplay } from "@core/utils/date";
+import { Pagination } from "@core/components/ui/Pagination";
+import type { ListMovieParams } from "./types";
+import { useEffect, useRef, useState } from "react";
 
-export const ListMovie = () => {
-  const { data, isLoading, isError, error } = useListMovies();
+interface ListMovieProps extends Omit<ListMovieParams, "page" | "perPage"> {}
+
+export const ListMovie = ({
+  genre,
+  releaseDateEnd,
+  releaseDateStart,
+  durationMax,
+  durationMin,
+  search,
+}: ListMovieProps) => {
+  const [page, setPage] = useState(1);
+  const [perPage] = useState(10);
+  const { data, isLoading, isError, error } = useListMovies({
+    page,
+    perPage,
+    genre,
+    releaseDateEnd,
+    releaseDateStart,
+    durationMax,
+    durationMin,
+    search,
+  });
+
+  useEffect(() => {
+    setPage(1);
+  }, [
+    genre,
+    releaseDateEnd,
+    releaseDateStart,
+    durationMax,
+    durationMin,
+    search,
+  ]);
   const [openEdit, setOpenEdit] = useState(false);
   const [movieToEdit, setMovieToEdit] = useState<IMovie | null>(null);
   const [openRemove, setOpenRemove] = useState(false);
   const [movieToRemove, setMovieToRemove] = useState<IMovie | null>(null);
   const [openView, setOpenView] = useState(false);
   const [movieToView, setMovieToView] = useState<IMovie | null>(null);
-  const editFormRef = React.useRef<EditMovieFormHandles>(null);
+  const editFormRef = useRef<EditMovieFormHandles>(null);
   const deleteMutation = useDeleteMovie({
     onSuccess: () => setOpenRemove(false),
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("Dados recebidos da API:", data);
   }, [data]);
 
@@ -38,32 +71,52 @@ export const ListMovie = () => {
     );
 
   return (
-    <div className="mx-auto p-4 pt-[68px]">
+    <div className="mx-auto p-2 sm:p-3 md:p-4 pt-5  w-full">
       {data?.data.length === 0 ? (
         <p className="text-center text-gray-500 py-10">
           Nenhum filme encontrado.
         </p>
       ) : (
-        <GridWrapper ariaLabel="Lista de filmes">
+        <GridWrapper
+          ariaLabel="Lista de filmes"
+          colsSmall={1}
+          colsMedium={2}
+          colsMd={2}
+          colsLarge={3}
+          colsXLarge={4}
+          gapClassName="gap-4 sm:gap-6 lg:gap-8 xl:gap-10"
+        >
           {data?.data.map((movie: IMovie) => (
-            <MovieCard
+            <div
               key={movie.id}
-              movie={movie}
-              onDetails={(m) => {
-                setMovieToView(m);
-                setOpenView(true);
-              }}
-              onEdit={() => {
-                setMovieToEdit(movie);
-                setOpenEdit(true);
-              }}
-              onRemove={(m) => {
-                setMovieToRemove(m);
-                setOpenRemove(true);
-              }}
-            />
+              className="w-full max-w-[440px] md:max-w-[500px] lg:max-w-[560px] xl:max-w-[620px] mx-auto sm:mx-0"
+            >
+              <MovieCard
+                movie={movie}
+                onDetails={(m) => {
+                  setMovieToView(m);
+                  setOpenView(true);
+                }}
+                onEdit={() => {
+                  setMovieToEdit(movie);
+                  setOpenEdit(true);
+                }}
+                onRemove={(m) => {
+                  setMovieToRemove(m);
+                  setOpenRemove(true);
+                }}
+              />
+            </div>
           ))}
         </GridWrapper>
+      )}
+
+      {data && (
+        <Pagination.Root
+          page={data.meta.page}
+          totalPages={data.meta.totalPages}
+          onChange={setPage}
+        />
       )}
 
       <Modal.Root open={openEdit} onClose={() => setOpenEdit(false)}>
@@ -108,7 +161,7 @@ export const ListMovie = () => {
               {movieToView.coverImageUrl && (
                 <div className="w-full h-40 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
                   <img
-                    src={movieToView.coverImageUrl}
+                    src={"/images/backgrounds/cinema-bg.png"}
                     alt={`Capa do filme ${movieToView.title}`}
                     className="w-full h-full object-cover"
                   />

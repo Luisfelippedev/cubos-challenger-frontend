@@ -58,7 +58,7 @@ const CloseButton = () => {
   return (
     <button
       onClick={onClose}
-      className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+      className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition cursor-pointer"
       aria-label="Fechar modal"
     >
       <X size={20} />
@@ -90,10 +90,10 @@ const Action = ({ variant = "confirm", children, ...props }: ActionProps) => {
   const { onClose } = useModalContext();
 
   const baseClasses =
-    "px-4 py-2 rounded-md font-medium text-sm transition focus:outline-none";
+    "px-4 py-2 rounded-md font-medium text-sm transition focus:outline-none inline-flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   const variants: Record<NonNullable<ActionProps["variant"]>, string> = {
     confirm:
-      "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
+      "bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white focus-visible:ring-indigo-500",
     cancel:
       "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700",
     danger:

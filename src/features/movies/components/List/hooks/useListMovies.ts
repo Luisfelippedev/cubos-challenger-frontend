@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { ListMovieResponse } from "../types";
+import { ListMovieParams, ListMovieResponse } from "../types";
 import { listMovies } from "../../../services/listMoviesService";
 import { useJWTAuth } from "src/features/auth/providers/AuthProdiver";
 
-export const useListMovies = () => {
+export const useListMovies = (params: ListMovieParams) => {
   const { isAuthenticated, isLoading } = useJWTAuth();
 
   return useQuery<ListMovieResponse, Error>({
-    queryKey: ["movies", { page: 1, perPage: 10 }],
-    queryFn: () => listMovies({ page: 1, perPage: 10 }),
+    queryKey: ["movies", params],
+    queryFn: () => listMovies(params),
     staleTime: 1000 * 60 * 5,
     enabled: isAuthenticated && !isLoading,
     retry: (failureCount, error) => {

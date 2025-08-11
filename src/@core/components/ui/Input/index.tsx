@@ -8,6 +8,8 @@ interface BaseProps {
   label?: string;
   id?: string;
   multiline?: boolean;
+  startAdornment?: React.ReactNode;
+  endAdornment?: React.ReactNode;
 }
 
 export type InputProps = BaseProps &
@@ -28,15 +30,22 @@ const Input = React.forwardRef<
       disabled = false,
       multiline = false,
       rows = 4,
+      startAdornment,
+      endAdornment,
       ...props
     },
     ref
   ) => {
+    const extraPadding = !multiline
+      ? clsx(endAdornment && "pr-10", startAdornment && "pl-10")
+      : undefined;
+
     const commonProps = {
       id,
       className: clsx(
         inputVariants({ error, disabled }),
         multiline && "min-h-24 max-h-60 overflow-y-auto resize-y",
+        extraPadding,
         className
       ),
       disabled,
@@ -62,11 +71,25 @@ const Input = React.forwardRef<
             rows={rows as number}
           />
         ) : (
-          <input
-            ref={ref as React.Ref<HTMLInputElement>}
-            {...commonProps}
-            {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
-          />
+          <div className={clsx((startAdornment || endAdornment) && "relative")}>
+            {startAdornment && (
+              <div className="pointer-events-auto absolute inset-y-0 left-0 flex items-center pl-3">
+                {startAdornment}
+              </div>
+            )}
+
+            <input
+              ref={ref as React.Ref<HTMLInputElement>}
+              {...commonProps}
+              {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+            />
+
+            {endAdornment && (
+              <div className="pointer-events-auto absolute inset-y-0 right-0 flex items-center pr-3">
+                {endAdornment}
+              </div>
+            )}
+          </div>
         )}
 
         {helperText && (

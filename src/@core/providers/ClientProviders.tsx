@@ -5,11 +5,13 @@ import { ThemeProvider } from "next-themes";
 import { FetchProvider } from "./FetchProvider";
 import JWTAuthProvider from "src/features/auth/providers/AuthProdiver";
 import { useState } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const ClientProviders = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(() => new QueryClient());
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <FetchProvider>
         <JWTAuthProvider>
           <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem>

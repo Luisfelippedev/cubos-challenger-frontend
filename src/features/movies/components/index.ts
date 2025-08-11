@@ -8,3 +8,4 @@ export {
   EditMovieForm,
   type EditMovieFormHandles,
 } from "./Forms/EditMovieForm";
+export { MoviesToolbar } from "./Toolbar";

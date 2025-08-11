@@ -1,9 +1,12 @@
 "use client";
 
 import React, { forwardRef, useImperativeHandle } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@core/components/ui/Input";
+import MultiSelect from "@core/components/ui/MultiSelect";
+import { GENRE_OPTIONS } from "src/features/movies/types/genreOptions";
+import TimeInput from "@core/components/ui/Input/TimeInput";
 import { useCreateMovieForm } from "./useCreateMovieForm";
 import {
   CreateMovieFormData,
@@ -25,6 +28,7 @@ export const CreateMovieForm = forwardRef<
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<CreateMovieFormData>({
     resolver: zodResolver(createMovieSchema),
@@ -64,13 +68,19 @@ export const CreateMovieForm = forwardRef<
         helperText={errors.description?.message}
       />
 
-      <Input
-        id="duration"
-        label="Duração (minutos)"
-        type="number"
-        {...register("duration", { valueAsNumber: true })}
-        error={!!errors.duration}
-        helperText={errors.duration?.message}
+      <Controller
+        name="duration"
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <TimeInput
+            id="duration"
+            label="Duração (HH:MM)"
+            value={typeof value === "number" ? value : 0}
+            onChange={onChange}
+            error={!!errors.duration}
+            helperText={errors.duration?.message}
+          />
+        )}
       />
 
       <Input
@@ -82,19 +92,21 @@ export const CreateMovieForm = forwardRef<
         helperText={errors.releaseDate?.message}
       />
 
-      <Input
-        id="genres"
-        label="Gêneros (separados por vírgula)"
-        placeholder="Ação, Drama"
-        {...register("genres", {
-          setValueAs: (v: string) =>
-            v
-              .split(",")
-              .map((g) => g.trim())
-              .filter((g) => g.length > 0),
-        })}
-        error={!!errors.genres}
-        helperText={errors.genres?.message}
+      <Controller
+        name="genres"
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <MultiSelect
+            id="genres"
+            label="Gêneros"
+            placeholder="Selecione os gêneros"
+            options={GENRE_OPTIONS}
+            value={Array.isArray(value) ? value : []}
+            onChange={onChange}
+            helperText={errors.genres?.message}
+            error={!!errors.genres}
+          />
+        )}
       />
     </form>
   );

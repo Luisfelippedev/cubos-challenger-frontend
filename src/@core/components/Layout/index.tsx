@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from "react";
 
 function Root({ children }: { children: React.ReactNode }) {
@@ -9,67 +8,17 @@ function Root({ children }: { children: React.ReactNode }) {
   );
 }
 
-interface HeaderProps {
-  children: React.ReactNode;
-  srcBackground?: string;
-}
-
-const Header = ({ children, srcBackground }: HeaderProps) => {
+const Header = ({ children }: { children: React.ReactNode }) => {
   return (
-    <header
-      className="
-        relative
-        h-[560px]  
-        flex
-        items-center
-        justify-center
-        px-20
-        py-4
-        border-b border-gray-200 dark:border-gray-800
-      "
-    >
-      {srcBackground && (
-        <>
-          <Image
-            src={srcBackground}
-            alt="Header background"
-            fill
-            style={{ objectFit: "cover" }}
-            priority
-            quality={100}
-            className="absolute inset-0 z-0 select-none pointer-events-none"
-          />
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-gray-900/80 via-gray-900/30 to-transparent" />
-        </>
-      )}
-
-      <div className="relative z-10 w-full flex justify-center items-center">
-        {children}
-      </div>
-    </header>
-  );
-};
-
-const Navbar = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <nav
-      className="
-        absolute
-        top-0 left-0 right-0
-        flex items-center justify-center
-        bg-transparent
-        pointer-events-auto
-        z-10
-      "
-    >
+    <header className="z-10 fixed w-full px-4 sm:px-8 md:px-12 lg:px-20 p-1 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
       {children}
-    </nav>
+    </header>
   );
 };
 
 const Body = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex-1 px-5 py-5 flex items-center justify-center">
+    <div className="flex-1 w-full  sm:px-6 md:px-8 lg:px-8  2xl:px-12 py-25 sm:py-20 md:py-20">
       {children}
     </div>
   );
@@ -79,7 +28,7 @@ const Footer = ({ children }: { children: React.ReactNode }) => {
   return (
     <footer
       className="
-        px-20 py-2 text-sm text-center
+        px-4 sm:px-8 md:px-12 lg:px-20 py-2 text-sm text-center
         text-gray-600 dark:text-gray-400
         bg-gray-50 dark:bg-gray-900
         border-t border-gray-200 dark:border-gray-800
@@ -93,7 +42,6 @@ const Footer = ({ children }: { children: React.ReactNode }) => {
 export const CoreLayout = {
   Root,
   Header,
-  Navbar,
   Body,
   Footer,
 };

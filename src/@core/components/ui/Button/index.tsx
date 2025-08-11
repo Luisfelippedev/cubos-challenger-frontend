@@ -29,7 +29,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       onClick && onClick(e);
-      e.currentTarget.blur(); 
+      e.currentTarget.blur();
     };
 
     return (

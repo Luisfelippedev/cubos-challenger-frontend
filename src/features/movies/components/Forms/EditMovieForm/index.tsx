@@ -4,6 +4,9 @@ import React, { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@core/components/ui/Input";
+import MultiSelect from "@core/components/ui/MultiSelect";
+import { GENRE_OPTIONS } from "src/features/movies/types/genreOptions";
+import TimeInput from "@core/components/ui/Input/TimeInput";
 import { EditMovieFormData, editMovieSchema } from "./editMovieFormSchema";
 import { useEditMovieForm } from "./useEditMovieForm";
 import { IMovie } from "../../../types";
@@ -89,13 +92,19 @@ export const EditMovieForm = forwardRef<
         helperText={errors.description?.message}
       />
 
-      <Input
-        id="duration"
-        label="Duração (minutos)"
-        type="number"
-        {...register("duration", { valueAsNumber: true })}
-        error={!!errors.duration}
-        helperText={errors.duration?.message}
+      <Controller
+        name="duration"
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <TimeInput
+            id="duration"
+            label="Duração (HH:MM)"
+            value={typeof value === "number" ? value : 0}
+            onChange={onChange}
+            error={!!errors.duration}
+            helperText={errors.duration?.message}
+          />
+        )}
       />
 
       <Input
@@ -111,19 +120,13 @@ export const EditMovieForm = forwardRef<
         name="genres"
         control={control}
         render={({ field: { value, onChange } }) => (
-          <Input
+          <MultiSelect
             id="genres"
-            label="Gêneros (separados por vírgula)"
-            placeholder="Ação, Drama"
-            value={Array.isArray(value) ? value.join(", ") : ""}
-            onChange={(e) =>
-              onChange(
-                String(e.target.value || "")
-                  .split(",")
-                  .map((g) => g.trim())
-                  .filter((g) => g.length > 0)
-              )
-            }
+            label="Gêneros"
+            placeholder="Selecione os gêneros"
+            options={GENRE_OPTIONS}
+            value={Array.isArray(value) ? value : []}
+            onChange={onChange}
             error={!!errors.genres}
             helperText={errors.genres?.message}
           />

@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { Genre } from "src/features/movies/types";
 
 export const createMovieSchema = z.object({
   title: z.string().min(1, "Título é obrigatório"),
@@ -10,9 +11,7 @@ export const createMovieSchema = z.object({
   releaseDate: z
     .string()
     .refine((val) => !isNaN(Date.parse(val)), "Data de lançamento inválida"),
-  genres: z
-    .array(z.string().min(1, "Gênero inválido"))
-    .min(1, "Selecione pelo menos um gênero"),
+  genres: z.array(z.nativeEnum(Genre)).min(1, "Selecione pelo menos um gênero"),
 });
 
 export type CreateMovieFormData = z.infer<typeof createMovieSchema>;

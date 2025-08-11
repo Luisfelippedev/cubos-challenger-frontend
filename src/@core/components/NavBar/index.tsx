@@ -1,51 +1,31 @@
-"use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { ThemeToggleButton } from "../ThemeToggleButton";
+import React from "react";
+import { ThemeToggleButton } from "@core/components/ThemeToggleButton";
+import BrandLogo from "@core/components/BrandLogo";
+import Link from "next/link";
+import { LogOut } from "lucide-react";
 import Button from "../ui/Button";
 import { useJWTAuthActions } from "src/features/auth/providers/AuthProdiver";
-import BrandLogo from "../BrandLogo";
 
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
   const { logout } = useJWTAuthActions();
 
-  useEffect(() => {
-    function onScroll() {
-      if (window.scrollY > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    }
-
-    window.addEventListener("scroll", onScroll);
-
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const handleExitButton = useCallback(() => {
-    logout();
-  }, []);
-
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-20 py-2 max-h-17
-    transition-colors duration-300 ease-in-out
-    ${
-      scrolled
-        ? "bg-gray-50 bg-opacity-70 border-b border-gray-200 dark:bg-gray-900 dark:bg-opacity-70 dark:border-gray-800 backdrop-blur-md"
-        : "bg-transparent border-b border-transparent"
-    }
-  `}
-      style={{ WebkitBackdropFilter: scrolled ? "blur(10px)" : "none" }}
-    >
-      <div className="text-lg font-bold">{scrolled && <BrandLogo />}</div>
+    <nav className="flex justify-between items-center">
+      <BrandLogo />
 
-      <div className="flex gap-5 items-center justify-center">
-        <Button variant={"link"} onClick={handleExitButton}>
-          Sair
-        </Button>
+      <div className="flex items-center gap-4">
         <ThemeToggleButton />
+
+        <Button
+          variant="icon"
+          aria-label={"Sair"}
+          title={"Sair"}
+          onClick={() => {
+            logout();
+          }}
+        >
+          <LogOut size={18} color="red" />
+        </Button>
       </div>
     </nav>
   );

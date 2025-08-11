@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Image from "next/image";
 import { Eye, Edit2, Trash, ImageOff } from "lucide-react";
 import { IMovie } from "../../types";
@@ -12,19 +12,19 @@ interface MovieCardProps {
   onRemove?: (movie: IMovie) => void;
 }
 
-export const MovieCard: React.FC<MovieCardProps> = ({
+export const MovieCard = ({
   movie,
   onDetails,
   onEdit,
   onRemove,
-}) => {
+}: MovieCardProps) => {
   const { title, releaseDate, duration, genres, coverImageUrl } = movie;
 
   const formattedDate = formatDateForDisplay(releaseDate);
 
   return (
     <div
-      className="relative rounded-lg shadow-lg overflow-hidden cursor-pointer transition-transform hover:scale-[1.03] text-white flex flex-col h-[600px]"
+      className="relative rounded-lg shadow-lg overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] text-white flex flex-col h-[560px] sm:h-[580px] lg:h-[600px]"
       aria-label={`Cartão do filme ${title}`}
     >
       {coverImageUrl ? (
@@ -42,7 +42,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-2" />
         </>
       ) : (
-        <div className="absolute inset-0 bg-gray-900 flex flex-col items-center justify-center px-4 text-center z-2">
+        <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center px-4 text-center z-2">
           <ImageOff className="text-gray-600 opacity-40" size={60} />
           <p className="mt-2 text-gray-500 text-sm select-none">
             Capa não disponível
@@ -51,11 +51,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       )}
 
       <div className="relative p-6 flex flex-col flex-grow justify-end z-2">
-        <h2 className="text-2xl font-bold leading-tight mb-1 line-clamp-2">
+        <h2 className="text-2xl font-bold leading-tight mb-1 line-clamp-2 text-gray-900 dark:text-white">
           {title}
         </h2>
 
-        <div className="text-sm text-gray-300 mb-3">{formattedDate}</div>
+        <div className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+          {formattedDate}
+        </div>
 
         <div className="flex flex-wrap gap-2 mb-6">
           <span className="bg-blue-600 bg-opacity-80 px-2 py-1 rounded text-xs font-semibold">
