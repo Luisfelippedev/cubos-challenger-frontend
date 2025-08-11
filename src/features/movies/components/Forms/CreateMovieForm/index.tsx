@@ -1,13 +1,22 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@core/components/ui/Input";
 import MultiSelect from "@core/components/ui/MultiSelect";
 import { GENRE_OPTIONS } from "src/features/movies/types/genreOptions";
 import TimeInput from "@core/components/ui/Input/TimeInput";
-import { useCreateMovieForm } from "./useCreateMovieForm";
+import UploadImage from "@core/components/ui/UploadImage";
+import { uploadMovieCover } from "src/features/movies/services/uploadCoverService";
+import { useFetchFeedback } from "@core/hooks/useFetchFeedback";
+import { useQueryClient } from "@tanstack/react-query";
+import { createMovie } from "src/features/movies/services/createMovieService";
 import {
   CreateMovieFormData,
   createMovieSchema,
@@ -34,10 +43,34 @@ export const CreateMovieForm = forwardRef<
     resolver: zodResolver(createMovieSchema),
   });
 
-  const mutation = useCreateMovieForm({ onSuccess });
+  const queryClient = useQueryClient();
+  const [localCoverUrl, setLocalCoverUrl] = useState<string | undefined>();
+  const [selectedCoverFile, setSelectedCoverFile] = useState<File | null>(null);
+  const { fetchStart, fetchSuccess, fetchError } = useFetchFeedback();
 
-  const onSubmit = (data: CreateMovieFormData) => {
-    mutation.mutate(data);
+  useEffect(() => {
+    return () => {
+      if (localCoverUrl?.startsWith("blob:"))
+        URL.revokeObjectURL(localCoverUrl);
+    };
+  }, [localCoverUrl]);
+
+  const onSubmit = async (data: CreateMovieFormData) => {
+    fetchStart();
+    try {
+      let coverUrl: string | undefined = undefined;
+      if (selectedCoverFile) {
+        const result = await uploadMovieCover(selectedCoverFile);
+        coverUrl = result.url;
+      }
+      const payload = { ...data, coverImageUrl: coverUrl };
+      await createMovie(payload);
+      fetchSuccess("Filme criado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
+      onSuccess?.();
+    } catch (error: any) {
+      fetchError(error?.response?.data?.message || "Erro ao criar filme");
+    }
   };
 
   useImperativeHandle(ref, () => ({
@@ -107,6 +140,26 @@ export const CreateMovieForm = forwardRef<
             error={!!errors.genres}
           />
         )}
+      />
+
+      <UploadImage
+        value={localCoverUrl}
+        onChange={(url) => {
+          // Remoção
+          if (!url) {
+            if (localCoverUrl?.startsWith("blob:"))
+              URL.revokeObjectURL(localCoverUrl);
+            setLocalCoverUrl(undefined);
+            setSelectedCoverFile(null);
+          }
+        }}
+        onSelect={(file) => {
+          if (localCoverUrl?.startsWith("blob:"))
+            URL.revokeObjectURL(localCoverUrl);
+          setSelectedCoverFile(file);
+          const preview = URL.createObjectURL(file);
+          setLocalCoverUrl(preview);
+        }}
       />
     </form>
   );

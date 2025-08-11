@@ -47,7 +47,11 @@ export default function MoviesPage() {
         </div>
       </CoreLayout.Body>
 
-      <Modal.Root open={open} onClose={() => setOpen(false)}>
+      <Modal.Root
+        open={open}
+        onClose={() => setOpen(false)}
+        disableOutsideClose
+      >
         <div className="relative p-6">
           <Modal.Title>Adicionar Filme</Modal.Title>
           <Modal.CloseButton />

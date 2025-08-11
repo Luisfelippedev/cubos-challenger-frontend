@@ -10,7 +10,7 @@ const Root = ({ children }: { children: React.ReactNode }) => {
 
 const Header = ({ children }: { children: React.ReactNode }) => {
   return (
-    <header className="px-20 p-1 border-b border-gray-200 dark:border-gray-800  bg-gray-50 dark:bg-gray-900">
+    <header className="px-4 sm:px-8 md:px-12 lg:px-20 p-1 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
       {children}
     </header>
   );

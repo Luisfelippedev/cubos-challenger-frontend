@@ -1,6 +1,11 @@
 "use client";
 
-import React, { forwardRef, useEffect, useImperativeHandle } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@core/components/ui/Input";
@@ -11,6 +16,11 @@ import { EditMovieFormData, editMovieSchema } from "./editMovieFormSchema";
 import { useEditMovieForm } from "./useEditMovieForm";
 import { IMovie } from "../../../types";
 import { formatDateForDateInput } from "@core/utils/date";
+import { uploadMovieCover } from "src/features/movies/services/uploadCoverService";
+import { useFetchFeedback } from "@core/hooks/useFetchFeedback";
+import UploadImage from "@core/components/ui/UploadImage";
+import { useQueryClient } from "@tanstack/react-query";
+import { updateMovie } from "../../../services/updateMovieService";
 
 export interface EditMovieFormHandles {
   submitForm: () => void;
@@ -53,10 +63,29 @@ export const EditMovieForm = forwardRef<
     });
   }, [movie, reset]);
 
-  const mutation = useEditMovieForm(movie.id, { onSuccess });
+  const queryClient = useQueryClient();
+  const [localCoverUrl, setLocalCoverUrl] = useState<string | undefined>(
+    movie.coverImageUrl
+  );
+  const [selectedCoverFile, setSelectedCoverFile] = useState<File | null>(null);
+  const { fetchStart, fetchSuccess, fetchError } = useFetchFeedback();
 
-  const onSubmit = (data: EditMovieFormData) => {
-    mutation.mutate(data);
+  const onSubmit = async (data: EditMovieFormData) => {
+    fetchStart();
+    try {
+      let coverUrl: string | undefined = movie.coverImageUrl;
+      if (selectedCoverFile) {
+        const result = await uploadMovieCover(selectedCoverFile);
+        coverUrl = result.url;
+      }
+      const payload = { ...data, coverImageUrl: coverUrl };
+      await updateMovie(movie.id, payload);
+      fetchSuccess("Filme atualizado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
+      onSuccess?.();
+    } catch (error: any) {
+      fetchError(error?.response?.data?.message || "Erro ao atualizar filme");
+    }
   };
 
   useImperativeHandle(ref, () => ({
@@ -72,6 +101,7 @@ export const EditMovieForm = forwardRef<
       noValidate
       onSubmit={handleSubmit(onSubmit)}
     >
+      {/* Loader global via FetchProvider */}
       <Input
         id="title"
         label="Título"
@@ -131,6 +161,25 @@ export const EditMovieForm = forwardRef<
             helperText={errors.genres?.message}
           />
         )}
+      />
+
+      <UploadImage
+        value={localCoverUrl}
+        onChange={(url) => {
+          if (!url) {
+            if (localCoverUrl?.startsWith("blob:"))
+              URL.revokeObjectURL(localCoverUrl);
+            setLocalCoverUrl(undefined);
+            setSelectedCoverFile(null);
+          }
+        }}
+        onSelect={(file) => {
+          if (localCoverUrl?.startsWith("blob:"))
+            URL.revokeObjectURL(localCoverUrl);
+          setSelectedCoverFile(file);
+          const preview = URL.createObjectURL(file);
+          setLocalCoverUrl(preview);
+        }}
       />
     </form>
   );

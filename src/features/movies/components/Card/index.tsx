@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { Eye, Edit2, Trash, ImageOff } from "lucide-react";
 import { IMovie } from "../../types";
 import Button from "@core/components/ui/Button";
@@ -29,16 +28,11 @@ export const MovieCard = ({
     >
       {coverImageUrl ? (
         <>
-          <Image
-            src={"/images/backgrounds/cinema-bg.png"}
+          <img
+            src={coverImageUrl}
             alt={`Capa do filme ${title}`}
-            fill
-            style={{ objectFit: "cover", opacity: 1 }}
-            quality={75}
-            priority={false}
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 w-full h-full object-cover z-0"
           />
-
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-2" />
         </>
       ) : (

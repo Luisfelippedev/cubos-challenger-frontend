@@ -20,9 +20,15 @@ interface RootProps {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
+  disableOutsideClose?: boolean;
 }
 
-const Root = ({ open, onClose, children }: RootProps) => {
+const Root = ({
+  open,
+  onClose,
+  children,
+  disableOutsideClose = false,
+}: RootProps) => {
   if (!open) return null;
 
   return (
@@ -34,10 +40,12 @@ const Root = ({ open, onClose, children }: RootProps) => {
       >
         <div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-          onClick={onClose}
+          onClick={() => {
+            if (!disableOutsideClose) onClose();
+          }}
         />
 
-        <div className="relative z-10 bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-lg mx-4 overflow-hidden animate-fadeIn">
+        <div className="relative z-10 bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-lg mx-4 overflow-hidden animate-fadeIn flex flex-col max-h-[85vh]">
           {children}
         </div>
       </div>
@@ -67,7 +75,7 @@ const CloseButton = () => {
 };
 
 const Content = ({ children }: { children: ReactNode }) => {
-  return <div className="p-6">{children}</div>;
+  return <div className="p-6 overflow-y-auto flex-1">{children}</div>;
 };
 
 const Description = ({ children }: { children: ReactNode }) => {

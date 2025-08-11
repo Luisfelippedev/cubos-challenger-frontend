@@ -119,7 +119,11 @@ export const ListMovie = ({
         />
       )}
 
-      <Modal.Root open={openEdit} onClose={() => setOpenEdit(false)}>
+      <Modal.Root
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        disableOutsideClose
+      >
         <div className="relative p-6">
           <Modal.Title>Editar Filme</Modal.Title>
           <Modal.CloseButton />
@@ -161,7 +165,7 @@ export const ListMovie = ({
               {movieToView.coverImageUrl && (
                 <div className="w-full h-40 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
                   <img
-                    src={"/images/backgrounds/cinema-bg.png"}
+                    src={movieToView.coverImageUrl}
                     alt={`Capa do filme ${movieToView.title}`}
                     className="w-full h-full object-cover"
                   />
