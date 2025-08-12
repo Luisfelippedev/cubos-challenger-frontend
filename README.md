@@ -25,7 +25,7 @@ Frontend do teste técnico da Cubos.io para gerenciamento de filmes. Consome uma
 Crie um arquivo `.env.local` na raiz com:
 
 ```env
-API_BASE_URL=https://sua-api.com
+API_BASE_URL=http://localhost:3001
 ```
 
 Observações:
@@ -45,7 +45,7 @@ yarn dev
 # ou
 npm run dev
 ```
-3. Acesse: http://localhost:3000
+3. Acesse: http://localhost:3001
 
 Build/produção local:
 ```bash
