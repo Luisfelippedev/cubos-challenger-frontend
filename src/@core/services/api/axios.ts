@@ -26,16 +26,12 @@ jwtAxios.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // logout();
-      // window.location.href = "/signin";
+      destroyCookie(null, "token");
+      delete jwtAxios.defaults.headers.common.Authorization;
 
-      // destroyCookie(null, "token");
-      // delete jwtAxios.defaults.headers.common.Authorization;
-
+      window.location.href = "/signin";
       return Promise.reject(error);
     }
-
-    return Promise.reject(error);
   }
 );
 
